@@ -1,4 +1,9 @@
-FROM centos:8
+FROM centos:8.3.2011
+
+# Pin some repos to 8.3
+RUN sed -i 's!/$releasever/!/8.3.2011/!g' /etc/yum.repos.d/CentOS-Linux-{AppStream,BaseOS,Extras,PowerTools}.repo
+RUN sed -i 's!^#baseurl!baseurl!g' /etc/yum.repos.d/CentOS-Linux-{AppStream,BaseOS,Extras,PowerTools}.repo
+RUN sed -i 's!^mirrorlist!#mirrorlist!g' /etc/yum.repos.d/CentOS-Linux-{AppStream,BaseOS,Extras,PowerTools}.repo
 
 # Add some repos
 RUN dnf install epel-release epel-release 'dnf-command(config-manager)' --refresh -y && \
