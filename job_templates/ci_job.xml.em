@@ -126,6 +126,10 @@ if [ "$CI_USE_WHITESPACE_IN_PATHS" = "true" ]; then
   export CI_ARGS="$CI_ARGS --white-space-in sourcespace buildspace installspace workspace"
 fi
 
+if [ "$CI_USE_GURUMDDS" = "false" ]; then
+  export CI_ARGS="$CI_ARGS rmw_gurumdds_cpp"
+fi
+
 if [ -z "${CI_ROS2_REPOS_URL+x}" ]; then
   CI_ROS2_REPOS_URL="@default_repos_url"
 fi
@@ -243,6 +247,10 @@ if "!CI_USE_WHITESPACE_IN_PATHS!" == "true" (
   set "CI_ARGS=!CI_ARGS! --white-space-in sourcespace buildspace installspace workspace"
 )
 
+if "!CI_USE_GURUMDDS!" == "false" (
+  set "CI_ARGS=!CI_ARGS! rmw_gurumdds_cpp"
+)
+
 if "!CI_ROS2_REPOS_URL!" EQU "" (
   set "CI_ROS2_REPOS_URL=@default_repos_url"
 )
@@ -318,6 +326,11 @@ if "!CI_ROS_DISTRO!" NEQ "" (
 if "!CI_USE_WHITESPACE_IN_PATHS!" == "true" (
   set "CI_ARGS=!CI_ARGS! --white-space-in sourcespace buildspace installspace workspace"
 )
+
+if "!CI_USE_GURUMDDS!" == "false" (
+  set "CI_ARGS=!CI_ARGS! rmw_gurumdds_cpp"
+)
+
 if "!CI_ROS2_REPOS_URL!" EQU "" (
   set "CI_ROS2_REPOS_URL=@default_repos_url"
 )
