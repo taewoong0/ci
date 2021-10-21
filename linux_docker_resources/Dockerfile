@@ -49,6 +49,7 @@ RUN apt-get update && apt-get install --no-install-recommends -y \
   libxslt-dev \
   pydocstyle \
   pyflakes \
+  python3-dev \
   python3-coverage \
   python3-cryptography \
   python3-flake8 \
@@ -56,6 +57,7 @@ RUN apt-get update && apt-get install --no-install-recommends -y \
   python3-mock \
   python3-mypy \
   python3-netifaces \
+  python3-rosdep \
   python3-nose \
   python3-numpy \
   python3-pep8 \
@@ -67,6 +69,10 @@ RUN apt-get update && apt-get install --no-install-recommends -y \
 # Install and self update pip/setuptools to the latest version.
 RUN apt-get update && apt-get install --no-install-recommends -y python3-pip
 RUN pip3 install -U setuptools pip virtualenv==16.7.9
+
+# Initialize rosdep
+RUN rosdep init && rosdep update
+RUN apt install -y gurumdds-2.7
 
 # Install clang if build arg is true
 RUN if test ${COMPILE_WITH_CLANG} = true; then apt-get update && apt-get install --no-install-recommends -y clang libc++-dev libc++abi-dev; fi
