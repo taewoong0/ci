@@ -40,7 +40,6 @@
 @(SNIPPET(
     'property_parameter-definition_rmw_implementations',
     ignore_rmw_default=ignore_rmw_default,
-    use_connext_debs_default=use_connext_debs_default,
 ))@
         <hudson.model.StringParameterDefinition>
           <name>CI_MIXED_ROS_OVERLAY_PKGS</name>

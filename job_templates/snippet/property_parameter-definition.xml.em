@@ -23,7 +23,6 @@ This tests the robustness to whitespace being within the different paths.</descr
 @(SNIPPET(
     'property_parameter-definition_rmw_implementations',
     ignore_rmw_default=ignore_rmw_default,
-    use_connext_debs_default=use_connext_debs_default,
 ))@
         <hudson.model.BooleanParameterDefinition>
           <name>CI_COMPILE_WITH_CLANG</name>

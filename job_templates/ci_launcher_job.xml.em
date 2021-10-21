@@ -20,7 +20,6 @@
     default_repos_url=default_repos_url,
     supplemental_repos_url=supplemental_repos_url,
     ignore_rmw_default=ignore_rmw_default,
-    use_connext_debs_default=use_connext_debs_default,
     use_isolated_default=use_isolated_default,
     ubuntu_distro=ubuntu_distro,
     ros_distro=ros_distro,

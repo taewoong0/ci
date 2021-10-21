@@ -28,7 +28,6 @@
     default_repos_url=default_repos_url,
     supplemental_repos_url=supplemental_repos_url,
     ignore_rmw_default=ignore_rmw_default,
-    use_connext_debs_default=use_connext_debs_default,
     use_isolated_default=use_isolated_default,
     ubuntu_distro=ubuntu_distro,
     ros_distro=ros_distro,
@@ -89,11 +88,7 @@
         <script plugin="script-security@@1.70">
           <script><![CDATA[build.setDescription("""\
 branch: ${build.buildVariableResolver.resolve('CI_BRANCH_TO_TEST')}, <br/>
-use_connextdds: ${build.buildVariableResolver.resolve('CI_USE_CONNEXTDDS')}, <br/>
-use_connext_debs: ${build.buildVariableResolver.resolve('CI_USE_CONNEXT_DEBS')}, <br/>
-use_cyclonedds: ${build.buildVariableResolver.resolve('CI_USE_CYCLONEDDS')}, <br/>
-use_fastrtps_static: ${build.buildVariableResolver.resolve('CI_USE_FASTRTPS_STATIC')}, <br/>
-use_fastrtps_dynamic: ${build.buildVariableResolver.resolve('CI_USE_FASTRTPS_DYNAMIC')}, <br/>
+use_gurumdds: ${build.buildVariableResolver.resolve('CI_USE_GURUMDDS')}, <br/>
 ci_branch: ${build.buildVariableResolver.resolve('CI_SCRIPTS_BRANCH')}, <br/>
 repos_url: ${build.buildVariableResolver.resolve('CI_ROS2_REPOS_URL')}, <br/>
 supplemental_repos_url: ${build.buildVariableResolver.resolve('CI_ROS2_SUPPLEMENTAL_REPOS_URL')}, <br/>
@@ -130,32 +125,7 @@ fi
 if [ "$CI_USE_WHITESPACE_IN_PATHS" = "true" ]; then
   export CI_ARGS="$CI_ARGS --white-space-in sourcespace buildspace installspace workspace"
 fi
-export CI_ARGS="$CI_ARGS --ignore-rmw rmw_connext_dynamic_cpp"
-# TODO(asorbini) `rmw_connext_cpp` is still the default for foxy.
-if [ -n "$CI_ROS_DISTRO" -a \( "$CI_ROS_DISTRO" = foxy \) ]; then
-  if [ "$CI_USE_CONNEXTDDS" = "false" ]; then
-    export CI_ARGS="$CI_ARGS rmw_connext_cpp"
-  fi
-else
-  # Always ignore `rmw_connext_cpp` in favor of `rmw_connextdds` for newer releases.
-  export CI_ARGS="$CI_ARGS rmw_connext_cpp"
-  if [ "$CI_USE_CONNEXTDDS" = "false" ]; then
-    export CI_ARGS="$CI_ARGS rmw_connextdds"
-  fi
-fi
-if [ "$CI_USE_CYCLONEDDS" = "false" ]; then
-  export CI_ARGS="$CI_ARGS rmw_cyclonedds_cpp"
-fi
-if [ "$CI_USE_FASTRTPS_STATIC" = "false" ]; then
-  export CI_ARGS="$CI_ARGS rmw_fastrtps_cpp"
-fi
-if [ "$CI_USE_FASTRTPS_DYNAMIC" = "false" ]; then
-  export CI_ARGS="$CI_ARGS rmw_fastrtps_dynamic_cpp"
-fi
-if [ "$CI_USE_CONNEXT_DEBS" = "true" ]; then
-  export CI_ARGS="$CI_ARGS --connext-debs"
-  export DOCKER_BUILD_ARGS="$DOCKER_BUILD_ARGS --build-arg INSTALL_CONNEXT_DEBS=$CI_USE_CONNEXT_DEBS"
-fi
+
 if [ -z "${CI_ROS2_REPOS_URL+x}" ]; then
   CI_ROS2_REPOS_URL="@default_repos_url"
 fi
@@ -272,37 +242,7 @@ if "!CI_COLCON_BRANCH!" NEQ "" (
 if "!CI_USE_WHITESPACE_IN_PATHS!" == "true" (
   set "CI_ARGS=!CI_ARGS! --white-space-in sourcespace buildspace installspace workspace"
 )
-set "CI_ARGS=!CI_ARGS! --ignore-rmw rmw_connext_dynamic_cpp"
-:: TODO(asorbini) `rmw_connext_cpp` is still the default for foxy.
-set "CI_CONNEXTDDS_RMW="
-if "!CI_ROS_DISTRO!" NEQ "" (
-  if "!CI_ROS_DISTRO!" == "foxy" (
-    set CI_CONNEXTDDS_RMW=rmw_connext_cpp
-  )
-)
-if "!CI_CONNEXTDDS_RMW!" == "rmw_connext_cpp" (
-  if "!CI_USE_CONNEXTDDS!" == "false" (
-    set "CI_ARGS=!CI_ARGS! rmw_connext_cpp"
-  )
-) else (
-  :: Always ignore `rmw_connext_cpp` in favor of `rmw_connextdds` for newer releases.
-  set "CI_ARGS=!CI_ARGS! rmw_connext_cpp"
-  if "!CI_USE_CONNEXTDDS!" == "false" (
-    set "CI_ARGS=!CI_ARGS! rmw_connextdds"
-  )
-)
-if "!CI_USE_CYCLONEDDS!" == "false" (
-  set "CI_ARGS=!CI_ARGS! rmw_cyclonedds_cpp"
-)
-if "!CI_USE_FASTRTPS_STATIC!" == "false" (
-  set "CI_ARGS=!CI_ARGS! rmw_fastrtps_cpp"
-)
-if "!CI_USE_FASTRTPS_DYNAMIC!" == "false" (
-  set "CI_ARGS=!CI_ARGS! rmw_fastrtps_dynamic_cpp"
-)
-if "!CI_USE_CONNEXT_DEBS!" == "true" (
-  set "CI_ARGS=!CI_ARGS! --connext-debs"
-)
+
 if "!CI_ROS2_REPOS_URL!" EQU "" (
   set "CI_ROS2_REPOS_URL=@default_repos_url"
 )
@@ -377,37 +317,6 @@ if "!CI_ROS_DISTRO!" NEQ "" (
 )
 if "!CI_USE_WHITESPACE_IN_PATHS!" == "true" (
   set "CI_ARGS=!CI_ARGS! --white-space-in sourcespace buildspace installspace workspace"
-)
-set "CI_ARGS=!CI_ARGS! --ignore-rmw rmw_connext_dynamic_cpp"
-:: TODO(asorbini) `rmw_connext_cpp` is still the default for foxy.
-set "CI_CONNEXTDDS_RMW="
-if "!CI_ROS_DISTRO!" NEQ "" (
-  if "!CI_ROS_DISTRO!" == "foxy" (
-    set CI_CONNEXTDDS_RMW=rmw_connext_cpp
-  )
-)
-if "!CI_CONNEXTDDS_RMW!" == "rmw_connext_cpp" (
-  if "!CI_USE_CONNEXTDDS!" == "false" (
-    set "CI_ARGS=!CI_ARGS! rmw_connext_cpp"
-  )
-) else (
-  :: Always ignore `rmw_connext_cpp` in favor of `rmw_connextdds` for newer releases.
-  set "CI_ARGS=!CI_ARGS! rmw_connext_cpp"
-  if "!CI_USE_CONNEXTDDS!" == "false" (
-    set "CI_ARGS=!CI_ARGS! rmw_connextdds"
-  )
-)
-if "!CI_USE_CYCLONEDDS!" == "false" (
-  set "CI_ARGS=!CI_ARGS! rmw_cyclonedds_cpp"
-)
-if "!CI_USE_FASTRTPS_STATIC!" == "false" (
-  set "CI_ARGS=!CI_ARGS! rmw_fastrtps_cpp"
-)
-if "!CI_USE_FASTRTPS_DYNAMIC!" == "false" (
-  set "CI_ARGS=!CI_ARGS! rmw_fastrtps_dynamic_cpp"
-)
-if "!CI_USE_CONNEXT_DEBS!" == "true" (
-  set "CI_ARGS=!CI_ARGS! --connext-debs"
 )
 if "!CI_ROS2_REPOS_URL!" EQU "" (
   set "CI_ROS2_REPOS_URL=@default_repos_url"
