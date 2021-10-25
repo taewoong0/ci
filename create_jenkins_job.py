@@ -113,17 +113,17 @@ def main(argv=None):
     jenkins = connect(args.jenkins_url)
 
     os_configs = {
-        'linux_foxy': {
+        'linux': {
             'label_expression': 'linux',
             'shell_type': 'Shell',
             'ros_distro': 'foxy',
         },
-        'linux_rolling': {
+        'linux': {
             'label_expression': 'linux',
             'shell_type': 'Shell',
             'ros_distro': 'rolling',
         },
-        'linux_galactic': {
+        'linux': {
             'label_expression': 'linux',
             'shell_type': 'Shell',
             'ros_distro': 'galactic',
@@ -152,7 +152,7 @@ def main(argv=None):
     # configure os specific jobs
     for os_name in sorted(os_configs.keys()):
         # configure manual triggered job
-        create_job(os_name, 'ci_' + os_name, 'ci_job.xml.em', {
+        create_job(os_name, 'ci_' + os_configs[os_name]['ros_distro'] + os_name, 'ci_job.xml.em', {
             'cmake_build_type': 'None',
             'time_trigger_spec': PERIODIC_JOB_SPEC,
         })
