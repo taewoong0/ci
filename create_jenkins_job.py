@@ -112,24 +112,6 @@ def main(argv=None):
 
     jenkins = connect(args.jenkins_url)
 
-    os_configs = {
-        'linux': {
-            'label_expression': 'linux',
-            'shell_type': 'Shell',
-            'ros_distro': 'foxy',
-        },
-        'linux': {
-            'label_expression': 'linux',
-            'shell_type': 'Shell',
-            'ros_distro': 'rolling',
-        },
-        'linux': {
-            'label_expression': 'linux',
-            'shell_type': 'Shell',
-            'ros_distro': 'galactic',
-        },
-    }
-
     jenkins_kwargs = {}
     if not args.commit:
         jenkins_kwargs['dry_run'] = True
@@ -149,15 +131,42 @@ def main(argv=None):
         job_config = expand_template(template_file, job_data)
         configure_job(jenkins, job_name, job_config, **jenkins_kwargs)
 
-    # configure os specific jobs
-    for os_name in sorted(os_configs.keys()):
-        # configure manual triggered job
-        create_job(os_name, 'ci_' + os_configs[os_name]['ros_distro'] + os_name, 'ci_job.xml.em', {
-            'cmake_build_type': 'None',
-            'time_trigger_spec': PERIODIC_JOB_SPEC,
-        })
+    os_name = 'linux'
+    os_configs = {
+        os_name: {
+            'label_expression': os_name,
+            'shell_type': 'Shell',
+            'ros_distro': 'foxy',
+        },
+    }
+    create_job(os_name, f'ci_{os_name}_' + os_configs[os_name]['ros_distro'], 'ci_job.xml.em', {
+        'cmake_build_type': 'None',
+        'time_trigger_spec': PERIODIC_JOB_SPEC,
+    })
 
-    # def create_job(os_name, )
+    os_configs = {
+        'linux': {
+            'label_expression': 'linux',
+            'shell_type': 'Shell',
+            'ros_distro': 'rolling',
+        },
+    }
+    create_job(os_name, f'ci_{os_name}_' + os_configs[os_name]['ros_distro'], 'ci_job.xml.em', {
+        'cmake_build_type': 'None',
+        'time_trigger_spec': PERIODIC_JOB_SPEC,
+    })
+
+    os_configs = {
+        'linux': {
+            'label_expression': 'linux',
+            'shell_type': 'Shell',
+            'ros_distro': 'galactic',
+        },
+    }
+    create_job(os_name, f'ci_{os_name}_' + os_configs[os_name]['ros_distro'], 'ci_job.xml.em', {
+        'cmake_build_type': 'None',
+        'time_trigger_spec': PERIODIC_JOB_SPEC,
+    })
            
 
 if __name__ == '__main__':
