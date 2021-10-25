@@ -39,7 +39,7 @@ try:
 except ImportError:
     sys.exit("Could not import symbol from ros_buildfarm, please update ros_buildfarm.")
 
-DEFAULT_REPOS_URL = 'https://raw.githubusercontent.com/gurumnet/ros2/master/ros2.repos'
+DEFAULT_REPOS_URL = 'https://raw.githubusercontent.com/gurumnet/ros2/{ros_distro}/ros2.repos'
 DEFAULT_MAIL_RECIPIENTS = 'taewoong@gurum.cc'
 PERIODIC_JOB_SPEC = '30 7 * * *'
 
@@ -55,7 +55,6 @@ def nonnegative_int(inval):
     if ret < 0:
         raise argparse.ArgumentTypeError('Value must be nonnegative integer')
     return ret
-
 
 def main(argv=None):
     if argv is None:
@@ -92,7 +91,7 @@ def main(argv=None):
             'num_to_keep': 3000},
         'ci_scripts_repository': args.ci_scripts_repository,
         'ci_scripts_default_branch': args.ci_scripts_default_branch,
-        'default_repos_url': DEFAULT_REPOS_URL,
+        'default_repos_url': '',
         'supplemental_repos_url': '',
         'time_trigger_spec': '',
         'mailer_recipients': '',
@@ -108,15 +107,26 @@ def main(argv=None):
         'dont_notify_every_unstable_build': 'false',
         'build_timeout_mins': 0,
         'ubuntu_distro': 'focal',
-        'ros_distro': 'foxy',
+        'ros_distro': '',
     }
 
     jenkins = connect(args.jenkins_url)
 
     os_configs = {
-        'linux': {
+        'linux_foxy': {
             'label_expression': 'linux',
             'shell_type': 'Shell',
+            'ros_distro': 'foxy',
+        },
+        'linux_rolling': {
+            'label_expression': 'linux',
+            'shell_type': 'Shell',
+            'ros_distro': 'rolling',
+        },
+        'linux_galactic': {
+            'label_expression': 'linux',
+            'shell_type': 'Shell',
+            'ros_distro': 'galactic',
         },
     }
 
@@ -131,6 +141,8 @@ def main(argv=None):
         if pattern_select_jobs_regexp and not pattern_select_jobs_regexp.match(job_name):
             return
         job_data = dict(data)
+        job_data['default_repos_url'] = DEFAULT_REPOS_URL.format(ros_distro=os_configs[os_name]['ros_distro'])
+        job_data['ros_distro'] = os_configs[os_name]['ros_distro']
         job_data['os_name'] = os_name
         job_data.update(os_configs[os_name])
         job_data.update(additional_dict)
@@ -144,6 +156,8 @@ def main(argv=None):
             'cmake_build_type': 'None',
             'time_trigger_spec': PERIODIC_JOB_SPEC,
         })
+
+    # def create_job(os_name, )
            
 
 if __name__ == '__main__':
