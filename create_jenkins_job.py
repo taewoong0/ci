@@ -123,8 +123,11 @@ def main(argv=None):
         if pattern_select_jobs_regexp and not pattern_select_jobs_regexp.match(job_name):
             return
         job_data = dict(data)
-        job_data['default_repos_url'] = DEFAULT_REPOS_URL.format(ros_distro=os_configs[os_name]['ros_distro'])
         job_data['ros_distro'] = os_configs[os_name]['ros_distro']
+        if job_data['ros_distro'] == 'rolling'
+            job_data['default_repos_url'] = DEFAULT_REPOS_URL.format(ros_distro='master')
+        else:
+            job_data['default_repos_url'] = DEFAULT_REPOS_URL.format(ros_distro=os_configs[os_name]['ros_distro'])
         job_data['os_name'] = os_name
         job_data.update(os_configs[os_name])
         job_data.update(additional_dict)
