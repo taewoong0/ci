@@ -145,6 +145,11 @@ def main(argv=None):
             'shell_type': 'Shell',
             'ros_distro' : '',
         },
+        'windows': {
+            'label_expression': 'windows-container',
+            'shell_type': 'BatchFile',
+            'use_isolated_default': 'false',
+        },
     }
 
     for os_name in sorted(os_configs.keys()):
@@ -156,45 +161,6 @@ def main(argv=None):
                 'time_trigger_spec': PERIODIC_JOB_SPEC,
             })
 
-
-    # create job linux
-    # os_name = 'linux'
-    # os_configs = {
-    #     os_name: {
-    #         'label_expression': os_name,
-    #         'shell_type': 'Shell',
-    #         'ros_distro': 'foxy',
-    #     },
-    # }
-    # create_job(os_name, f'ci_{os_name}_' + os_configs[os_name]['ros_distro'], 'ci_job.xml.em', {
-    #     'cmake_build_type': 'None',
-    #     'time_trigger_spec': PERIODIC_JOB_SPEC,
-    # })
-
-    # os_configs = {
-    #     'linux': {
-    #         'label_expression': 'linux',
-    #         'shell_type': 'Shell',
-    #         'ros_distro': 'rolling',
-    #     },
-    # }
-    # create_job(os_name, f'ci_{os_name}_' + os_configs[os_name]['ros_distro'], 'ci_job.xml.em', {
-    #     'cmake_build_type': 'None',
-    #     'time_trigger_spec': PERIODIC_JOB_SPEC,
-    # })
-
-    # os_configs = {
-    #     'linux': {
-    #         'label_expression': 'linux',
-    #         'shell_type': 'Shell',
-    #         'ros_distro': 'galactic',
-    #     },
-    # }
-    # create_job(os_name, f'ci_{os_name}_' + os_configs[os_name]['ros_distro'], 'ci_job.xml.em', {
-    #     'cmake_build_type': 'None',
-    #     'time_trigger_spec': PERIODIC_JOB_SPEC,
-    # })
-           
 
 if __name__ == '__main__':
     main()

@@ -37,10 +37,6 @@ RUN choco install -y git chef-workstation
 
 # Copy over necessary files into container
 RUN IF NOT EXIST "C:\TEMP" mkdir C:\TEMP
-COPY rticonnextdds-license\ C:\TEMP\rticonnextdds-license
-COPY rticonnextdds-src\ C:\TEMP\rticonnextdds-src
-RUN copy /b C:\TEMP\rticonnextdds-src\rti_connext_dds-5.3.1-pro-host-x64Win64.exe.??? C:\TEMP\rticonnextdds-src\rti_connext_dds-5.3.1-pro-host-x64Win64.exe
-RUN copy /b C:\TEMP\rticonnextdds-src\rti_connext_dds-5.3.1-pro-target-x64Win64VS2017.rtipkg.??? C:\TEMP\rticonnextdds-src\rti_connext_dds-5.3.1-pro-target-x64Win64VS2017.rtipkg
 
 # ROS_DISTRO argument should be set to install dependencies for the target ROS version.
 ARG ROS_DISTRO
@@ -51,9 +47,9 @@ COPY ros2-cookbooks\ C:\TEMP\ros2-cookbooks
 RUN IF NOT EXIST "C:\TEMP" mkdir C:\TEMP\environments
 COPY qtaccount\ros2ci.rb C:\TEMP\environments\ros2ci.rb
 
-# Download vendor cookbooks
-WORKDIR C:\TEMP\ros2-cookbooks\cookbooks\ros2_windows
-RUN C:\opscode\chef-workstation\bin\berks vendor C:\TEMP\ros2-cookbooks\cookbooks
+ # Download vendor cookbooks
+# WORKDIR C:\TEMP\ros2-cookbooks\cookbooks\ros2_windows
+# RUN C:\opscode\chef-workstation\bin\berks vendor C:\TEMP\ros2-cookbooks\cookbooks
 
 # Initial run
 RUN c:\cinc-project\cinc\bin\cinc-solo.bat -c C:\TEMP\solo.rb -Eros2ci -j C:\TEMP\install_ros2_%ROS_DISTRO%.json
